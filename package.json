@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "dev:ts": "tsc -b -w",
-    "build": "vite build && node -e \"const fs = require('fs'); fs.cpSync('dist/client', 'dist', { recursive: true });\" && tsc --noEmit",
+    "build": "vite build && node -e \"const fs = require('fs'); fs.cpSync('dist/client', 'dist', { recursive: true }); fs.copyFileSync('dist/_shell.html', 'dist/index.html');\" && tsc --noEmit",
     "start": "node .output/server/index.mjs",
     "format": "prettier --write .",
     "lint": "tsc && eslint .  --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
