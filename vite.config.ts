@@ -13,20 +13,25 @@ const groqApiMiddleware = () => ({
         res.statusCode = 405
         return res.end('Method not allowed')
       }
-      
+
       let body = ''
       req.on('data', (chunk: any) => { body += chunk })
       req.on('end', async () => {
         try {
           const { fragrances, weather } = JSON.parse(body)
-          
+
           const env = loadEnv('', process.cwd(), '')
           const apiKey = env.GROQ_API_KEY || process.env.GROQ_API_KEY
 
           if (!apiKey) {
-            res.statusCode = 500
+            console.log('Groq API key not found, using mock response for demo')
+            const selectedFragrance = fragrances[Math.floor(Math.random() * fragrances.length)] || fragrances[0]
+            res.statusCode = 200
             res.setHeader('Content-Type', 'application/json')
-            return res.end(JSON.stringify({ error: 'Groq API key not found in .env' }))
+            return res.end(JSON.stringify({
+              fragrance: selectedFragrance,
+              reasoning: `(Demo Mode) This is a perfect choice for ${weather.temperature}°C and ${weather.condition} weather.`
+            }))
           }
 
           const prompt = `You are a fragrance expert. Given the current weather and a collection of fragrances, recommend exactly ONE fragrance that best fits today.
@@ -67,17 +72,17 @@ Respond with ONLY a JSON object in this exact format:
 
           const content = (await groqRes.json()).choices[0]?.message?.content
           const result = JSON.parse(content)
-          
+
           const selectedFragrance = fragrances.find((f: any) => f.id === result.fragranceId) || fragrances[0]
 
           res.statusCode = 200
           res.setHeader('Content-Type', 'application/json')
           res.end(JSON.stringify({ fragrance: selectedFragrance, reasoning: result.reasoning }))
-          
+
         } catch (err: any) {
-           res.statusCode = 500
-           res.setHeader('Content-Type', 'application/json')
-           res.end(JSON.stringify({ error: err.message }))
+          res.statusCode = 500
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ error: err.message }))
         }
       })
     })

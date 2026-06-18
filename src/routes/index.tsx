@@ -12,8 +12,8 @@ export const Route = createFileRoute('/')({
 
 function Dashboard() {
   const [myCollection] = useLocalStorage<string[]>('myCollection', [])
-  const [history, setHistory] = useLocalStorage<Array<{ fragrance: Fragrance; reasoning: string; timestamp: number; weather: WeatherData }>>('history', [])
-  
+  const [, setHistory] = useLocalStorage<Array<{ fragrance: Fragrance; reasoning: string; timestamp: number; weather: WeatherData }>>('history', [])
+
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -49,7 +49,7 @@ function Dashboard() {
 
     setLoading(true)
     setError(null)
-    
+
     try {
       const response = await fetch('/api/recommend', {
         method: 'POST',
@@ -64,12 +64,21 @@ function Dashboard() {
 
       const rec = await response.json()
       setRecommendation(rec)
-      
+
       // Save to history
       setHistory(prev => [{ ...rec, timestamp: Date.now(), weather }, ...prev].slice(0, 50))
     } catch (err) {
       console.error(err)
-      setError(`Failed to get recommendation. ${err instanceof Error ? err.message : String(err)}`)
+      const message = err instanceof Error ? err.message : String(err)
+      if (
+        message.includes('rate_limit') ||
+        message.includes('Rate limit') ||
+        message.includes('rate_limit_exceeded')
+      ) {
+        setError('Failed to get recommendation. Rate Limit Exceeded')
+      } else {
+        setError(`Failed to get recommendation. ${message}`)
+      }
     } finally {
       setLoading(false)
     }
@@ -104,7 +113,7 @@ function Dashboard() {
               {error ? (
                 <div className="text-center">
                   <p className="text-sm text-red-600">{error}</p>
-                  <button 
+                  <button
                     onClick={loadWeather}
                     className="mt-2 text-xs text-amber-700 underline hover:text-amber-900"
                   >
@@ -163,13 +172,13 @@ function Dashboard() {
               {recommendation.fragrance.name}
             </h2>
             <p className="text-sm text-amber-700/80">{recommendation.fragrance.brand}</p>
-            
+
             <div className="my-4 h-px bg-amber-100" />
-            
+
             <p className="text-sm leading-relaxed text-amber-800">
               {recommendation.reasoning}
             </p>
-            
+
             <div className="mt-4 flex flex-wrap gap-2">
               <span className="rounded-full bg-amber-100 px-3 py-1 text-xs text-amber-800">
                 {recommendation.fragrance.family}
@@ -190,8 +199,8 @@ function Dashboard() {
 
         {/* Navigation */}
         <nav className="mt-12 flex justify-center gap-8 text-sm">
-          <a 
-            href="/wardrobe" 
+          <a
+            href="/wardrobe"
             className="text-amber-700/80 underline-offset-4 hover:text-amber-900 hover:underline"
           >
             Wardrobe
