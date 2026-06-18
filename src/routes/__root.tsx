@@ -26,6 +26,10 @@ export const Route = createRootRouteWithContext<{
     ],
     links: [
       { rel: 'stylesheet', href: appCss },
+      { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32-light.png', media: '(prefers-color-scheme: light)' },
+      { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32-dark.png', media: '(prefers-color-scheme: dark)' },
+      { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16-light.png', media: '(prefers-color-scheme: light)' },
+      { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16-dark.png', media: '(prefers-color-scheme: dark)' },
       { rel: 'icon', href: '/favicon.ico' },
     ],
   }),
