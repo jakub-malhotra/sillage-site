@@ -24,12 +24,7 @@ export default async function handler(req: ExtendedRequest, res: ExtendedRespons
     const apiKey = process.env.GROQ_API_KEY;
 
     if (!apiKey) {
-      console.log('Groq API key not found on server, using mock response');
-      const selectedFragrance = fragrances[Math.floor(Math.random() * fragrances.length)] || fragrances[0];
-      return res.status(200).json({
-        fragrance: selectedFragrance,
-        reasoning: `(Demo Mode) This is a perfect choice for ${weather.temperature}°C and ${weather.condition} weather.`
-      });
+      return res.status(500).json({ error: 'Groq API key not configured on Vercel server. Please add GROQ_API_KEY to your Vercel environment variables.' });
     }
 
     const prompt = `You are a fragrance expert. Given the current weather and a collection of fragrances, recommend exactly ONE fragrance that best fits today.
