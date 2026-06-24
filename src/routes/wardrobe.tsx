@@ -145,7 +145,7 @@ function Wardrobe() {
                 disabled={extracting}
                 className="w-full rounded-xl bg-amber-900 py-3 text-center text-sm font-medium text-white shadow-sm transition-all hover:bg-amber-800 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {extracting ? 'Extracting Notes with AI...' : `✨ Extract Notes for "${searchQuery}" with AI`}
+                {extracting ? 'Searching with AI...' : `Search "${searchQuery}" with AI`}
               </button>
               {extractError && (
                 <p className="mt-2 text-center text-xs text-red-600">{extractError}</p>

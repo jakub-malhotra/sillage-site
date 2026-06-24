@@ -102,8 +102,32 @@ function Dashboard() {
     }
   }
 
+const getBgGradientClass = (family?: string) => {
+  if (!family) return 'bg-amber-50'
+
+  const fam = family.toLowerCase()
+  
+  if (fam.includes('aquatic') || fam.includes('marine') || fam.includes('sea')) {
+    return 'bg-gradient-to-br from-sky-100/70 via-amber-50/40 to-amber-50'
+  }
+  if (fam.includes('citrus') || fam.includes('aromatic') || fam.includes('fresh') || fam.includes('fougere')) {
+    return 'bg-gradient-to-br from-emerald-100/60 via-amber-50/40 to-amber-50'
+  }
+  if (fam.includes('floral') || fam.includes('fruity') || fam.includes('rose') || fam.includes('gourmand')) {
+    return 'bg-gradient-to-br from-rose-100/60 via-amber-50/40 to-amber-50'
+  }
+  if (fam.includes('amber') || fam.includes('oriental') || fam.includes('spicy') || fam.includes('vanilla') || fam.includes('leather')) {
+    return 'bg-gradient-to-br from-orange-100/60 via-amber-50/40 to-amber-50'
+  }
+  if (fam.includes('woody') || fam.includes('wood') || fam.includes('chypre') || fam.includes('cedar') || fam.includes('powdery')) {
+    return 'bg-gradient-to-br from-stone-200/60 via-amber-50/40 to-amber-50'
+  }
+
+  return 'bg-gradient-to-br from-amber-100/50 via-amber-50/40 to-amber-50'
+}
+
   return (
-    <div className="min-h-screen bg-amber-50">
+    <div className={`min-h-screen transition-all duration-1000 ${getBgGradientClass(recommendation?.fragrance?.family)}`}>
       <div className="mx-auto max-w-md px-6 py-12">
         {/* Header */}
         <header className="mb-10 text-center">
