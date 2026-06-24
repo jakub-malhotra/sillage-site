@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useLocalStorage } from '~/hooks/useLocalStorage'
 import { getCurrentWeather } from '~/lib/weather'
 import { MY_FRAGRANCES } from '~/lib/fragrances'
@@ -11,7 +11,7 @@ export const Route = createFileRoute('/')({
 })
 
 function Dashboard() {
-  const [myCollection] = useLocalStorage<string[]>('myCollection', [])
+  const [myCollection, setMyCollection] = useLocalStorage<any[]>('myCollection', [])
   const [, setHistory] = useLocalStorage<Array<{ fragrance: Fragrance; reasoning: string; timestamp: number; weather: WeatherData }>>('history', [])
 
   const [weather, setWeather] = useState<WeatherData | null>(null)
@@ -19,8 +19,26 @@ function Dashboard() {
   const [error, setError] = useState<string | null>(null)
   const [recommendation, setRecommendation] = useState<{ fragrance: Fragrance; reasoning: string } | null>(null)
 
-  // Get fragrances from my collection
-  const ownedFragrances: Fragrance[] = MY_FRAGRANCES.filter(f => myCollection.includes(f.id))
+  // Resolve full fragrance objects, migrating string IDs automatically
+  const ownedFragrances: Fragrance[] = useMemo(() => {
+    let changed = false
+    const migrated = myCollection.map(item => {
+      if (typeof item === 'string') {
+        const found = MY_FRAGRANCES.find(f => f.id === item)
+        if (found) {
+          changed = true
+          return found
+        }
+        return null
+      }
+      return item
+    }).filter((f): f is Fragrance => f !== null)
+
+    if (changed) {
+      setTimeout(() => setMyCollection(migrated), 0)
+    }
+    return migrated
+  }, [myCollection, setMyCollection])
 
   // Load weather on mount
   useEffect(() => {

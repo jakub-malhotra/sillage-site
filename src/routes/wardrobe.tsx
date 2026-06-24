@@ -10,8 +10,31 @@ export const Route = createFileRoute('/wardrobe')({
 })
 
 function Wardrobe() {
-  const [myCollection, setMyCollection] = useLocalStorage<string[]>('myCollection', [])
+  const [myCollection, setMyCollection] = useLocalStorage<any[]>('myCollection', [])
   const [searchQuery, setSearchQuery] = useState('')
+  const [extracting, setExtracting] = useState(false)
+  const [extractError, setExtractError] = useState<string | null>(null)
+
+  // Resolve full fragrance objects, migrating string IDs automatically
+  const myFragrances: FragranceData[] = useMemo(() => {
+    let changed = false
+    const migrated = myCollection.map(item => {
+      if (typeof item === 'string') {
+        const found = MY_FRAGRANCES.find(f => f.id === item)
+        if (found) {
+          changed = true
+          return found
+        }
+        return null
+      }
+      return item
+    }).filter((f): f is FragranceData => f !== null)
+
+    if (changed) {
+      setTimeout(() => setMyCollection(migrated), 0)
+    }
+    return migrated
+  }, [myCollection, setMyCollection])
 
   // Filter hardcoded fragrances by search query
   const searchResults = useMemo(() => {
@@ -20,22 +43,45 @@ function Wardrobe() {
     return MY_FRAGRANCES.filter(
       f =>
         (f.name.toLowerCase().includes(query) || f.brand.toLowerCase().includes(query)) &&
-        !myCollection.includes(f.id)
+        !myFragrances.some(myF => myF.id === f.id)
     ).slice(0, 5)
-  }, [searchQuery, myCollection])
+  }, [searchQuery, myFragrances])
 
-  // Get full fragrance data for my collection
-  const myFragrances: FragranceData[] = useMemo(() => {
-    return MY_FRAGRANCES.filter(f => myCollection.includes(f.id))
-  }, [myCollection])
-
-  const addToCollection = (id: string) => {
-    setMyCollection(prev => [...prev, id])
+  const addToCollection = (fragrance: FragranceData) => {
+    if (myFragrances.some(f => f.id === fragrance.id)) return
+    setMyCollection(prev => [...prev, fragrance])
     setSearchQuery('')
+    setExtractError(null)
+  }
+
+  const handleExtractNotes = async () => {
+    if (!searchQuery.trim()) return
+    setExtracting(true)
+    setExtractError(null)
+    try {
+      const response = await fetch('/api/extract-notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: searchQuery }),
+      })
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}))
+        throw new Error(errData.error || `HTTP error! status: ${response.status}`)
+      }
+
+      const fragrance: FragranceData = await response.json()
+      addToCollection(fragrance)
+    } catch (err: any) {
+      console.error(err)
+      setExtractError(err.message || 'Failed to extract fragrance notes')
+    } finally {
+      setExtracting(false)
+    }
   }
 
   const removeFromCollection = (id: string) => {
-    setMyCollection(prev => prev.filter(fid => fid !== id))
+    setMyCollection(prev => prev.filter(f => (typeof f === 'string' ? f : f.id) !== id))
   }
 
   return (
@@ -74,7 +120,7 @@ function Wardrobe() {
               {searchResults.map((fragrance) => (
                 <button
                   key={fragrance.id}
-                  onClick={() => addToCollection(fragrance.id)}
+                  onClick={() => addToCollection(fragrance)}
                   className="flex w-full items-center justify-between border-b border-amber-50 px-4 py-3 text-left last:border-0 hover:bg-amber-50"
                 >
                   <div>
@@ -89,7 +135,22 @@ function Wardrobe() {
           )}
 
           {searchQuery.trim() && searchResults.length === 0 && (
-            <p className="mt-3 text-center text-sm text-amber-600/60">No matches found</p>
+            <p className="mt-3 text-center text-sm text-amber-600/60">No matches found in standard library.</p>
+          )}
+
+          {searchQuery.trim() && (
+            <div className="mt-3">
+              <button
+                onClick={handleExtractNotes}
+                disabled={extracting}
+                className="w-full rounded-xl bg-amber-900 py-3 text-center text-sm font-medium text-white shadow-sm transition-all hover:bg-amber-800 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {extracting ? 'Extracting Notes with AI...' : `✨ Extract Notes for "${searchQuery}" with AI`}
+              </button>
+              {extractError && (
+                <p className="mt-2 text-center text-xs text-red-600">{extractError}</p>
+              )}
+            </div>
           )}
         </div>
 
