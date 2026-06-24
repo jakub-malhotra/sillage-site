@@ -108,22 +108,22 @@ const getBgGradientClass = (family?: string) => {
   const fam = family.toLowerCase()
   
   if (fam.includes('aquatic') || fam.includes('marine') || fam.includes('sea')) {
-    return 'bg-gradient-to-br from-sky-100/70 via-amber-50/40 to-amber-50'
+    return 'bg-gradient-to-br from-sky-100 via-zinc-50 to-blue-50'
   }
   if (fam.includes('citrus') || fam.includes('aromatic') || fam.includes('fresh') || fam.includes('fougere')) {
-    return 'bg-gradient-to-br from-emerald-100/60 via-amber-50/40 to-amber-50'
+    return 'bg-gradient-to-br from-emerald-50 via-zinc-50 to-teal-50/70'
   }
   if (fam.includes('floral') || fam.includes('fruity') || fam.includes('rose') || fam.includes('gourmand')) {
-    return 'bg-gradient-to-br from-rose-100/60 via-amber-50/40 to-amber-50'
+    return 'bg-gradient-to-br from-rose-100/80 via-zinc-50 to-pink-50'
   }
   if (fam.includes('amber') || fam.includes('oriental') || fam.includes('spicy') || fam.includes('vanilla') || fam.includes('leather')) {
-    return 'bg-gradient-to-br from-orange-100/60 via-amber-50/40 to-amber-50'
+    return 'bg-gradient-to-br from-amber-100 via-zinc-50 to-orange-50'
   }
   if (fam.includes('woody') || fam.includes('wood') || fam.includes('chypre') || fam.includes('cedar') || fam.includes('powdery')) {
-    return 'bg-gradient-to-br from-stone-200/60 via-amber-50/40 to-amber-50'
+    return 'bg-gradient-to-br from-stone-200/70 via-zinc-50 to-stone-100'
   }
 
-  return 'bg-gradient-to-br from-amber-100/50 via-amber-50/40 to-amber-50'
+  return 'bg-gradient-to-br from-amber-50 via-zinc-50 to-amber-100/40'
 }
 
   return (

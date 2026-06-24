@@ -2,8 +2,12 @@ import type { WeatherData } from '~/types'
 
 export async function getCurrentWeather(): Promise<WeatherData> {
   return new Promise((resolve, reject) => {
+    const DEFAULT_LAT = 40.7128
+    const DEFAULT_LON = -74.0060
+
     if (!navigator.geolocation) {
-      reject(new Error('Geolocation not supported'))
+      console.warn('Geolocation not supported, using fallback location (New York)')
+      fetchWeatherData(DEFAULT_LAT, DEFAULT_LON).then(resolve).catch(reject)
       return
     }
 
@@ -14,13 +18,20 @@ export async function getCurrentWeather(): Promise<WeatherData> {
           const weather = await fetchWeatherData(latitude, longitude)
           resolve(weather)
         } catch (error) {
-          reject(error)
+          console.warn('Failed to fetch weather for current position, using fallback')
+          fetchWeatherData(DEFAULT_LAT, DEFAULT_LON).then(resolve).catch(reject)
         }
       },
-      (error) => {
-        reject(new Error(`Location access denied: ${error.message}`))
+      async (error) => {
+        console.warn(`Location access denied (${error.message}), using fallback location (New York)`)
+        try {
+          const weather = await fetchWeatherData(DEFAULT_LAT, DEFAULT_LON)
+          resolve(weather)
+        } catch (err) {
+          reject(new Error(`Location access denied and fallback failed: ${err}`))
+        }
       },
-      { timeout: 10000, enableHighAccuracy: false }
+      { timeout: 5000, enableHighAccuracy: false }
     )
   })
 }
