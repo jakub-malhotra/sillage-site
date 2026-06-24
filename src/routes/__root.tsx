@@ -27,10 +27,8 @@ export const Route = createRootRouteWithContext<{
     links: [
       { rel: 'stylesheet', href: appCss },
       { rel: 'icon', href: '/favicon.ico?v=1' },
-      { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32-light.png?v=1', media: '(prefers-color-scheme: light)' },
-      { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32-dark.png?v=1', media: '(prefers-color-scheme: dark)' },
-      { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16-light.png?v=1', media: '(prefers-color-scheme: light)' },
-      { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16-dark.png?v=1', media: '(prefers-color-scheme: dark)' },
+      { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png?v=1' },
+      { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png?v=1' },
     ],
   }),
   notFoundComponent: () => <div>Route not found</div>,
