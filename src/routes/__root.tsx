@@ -40,9 +40,15 @@ export const Route = createRootRouteWithContext<{
         property: 'og:image',
         content: '/og-image.png',
       },
+      {
+        name: 'theme-color',
+        content: '#78350f',
+      },
     ],
     links: [
       { rel: 'stylesheet', href: appCss },
+      { rel: 'manifest', href: '/site.webmanifest' },
+      { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
       { rel: 'icon', href: '/favicon.ico?v=1' },
       { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png?v=1' },
       { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png?v=1' },

@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useEffect, useMemo } from 'react'
 import { useLocalStorage } from '~/hooks/useLocalStorage'
 import { getCurrentWeather } from '~/lib/weather'
@@ -33,38 +33,58 @@ function Dashboard() {
   const [error, setError] = useState<string | null>(null)
   const [recommendation, setRecommendation] = useState<{ fragrance: Fragrance; reasoning: string } | null>(null)
 
-  // Resolve full fragrance objects, migrating string IDs automatically
+  // Resolve full fragrance objects from collection
   const ownedFragrances: Fragrance[] = useMemo(() => {
-    let changed = false
-    const migrated = myCollection.map(item => {
-      if (typeof item === 'string') {
-        const found = MY_FRAGRANCES.find(f => f.id === item)
-        if (found) {
-          changed = true
-          return found
+    return myCollection
+      .map(item => {
+        if (typeof item === 'string') {
+          return MY_FRAGRANCES.find(f => f.id === item) || null
         }
-        return null
-      }
-      return item
-    }).filter((f): f is Fragrance => f !== null)
+        return item
+      })
+      .filter((f): f is Fragrance => f !== null)
+  }, [myCollection])
 
-    if (changed) {
-      setTimeout(() => setMyCollection(migrated), 0)
-    }
-    return migrated
-  }, [myCollection, setMyCollection])
-
-  // Load weather on mount
+  // Automatically migrate legacy string IDs to full objects if detected
   useEffect(() => {
-    loadWeather()
+    const hasStringIds = myCollection.some(item => typeof item === 'string')
+    if (hasStringIds && ownedFragrances.length > 0) {
+      setMyCollection(ownedFragrances)
+    }
+  }, [myCollection, ownedFragrances, setMyCollection])
+
+  // Load weather on mount with unmount cleanup safety
+  useEffect(() => {
+    let isMounted = true
+
+    const load = async () => {
+      try {
+        const data = await getCurrentWeather()
+        if (isMounted) {
+          setWeather(data)
+          setError(null)
+        }
+      } catch {
+        if (isMounted) {
+          setError('Could not get location/weather. Please enable location access.')
+        }
+      }
+    }
+
+    load()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
-  const loadWeather = async () => {
+  const handleRetryWeather = async () => {
+    setError(null)
+    setWeather(null)
     try {
       const data = await getCurrentWeather()
       setWeather(data)
-      setError(null)
-    } catch (err) {
+    } catch {
       setError('Could not get location/weather. Please enable location access.')
     }
   }
@@ -100,7 +120,6 @@ function Dashboard() {
       // Save to history
       setHistory(prev => [{ ...rec, timestamp: Date.now(), weather }, ...prev].slice(0, 50))
     } catch (err) {
-      console.error(err)
       const message = err instanceof Error ? err.message : String(err)
       if (
         message.includes('rate_limit') ||
@@ -156,7 +175,7 @@ function Dashboard() {
               <div>
                 <p className="text-xs font-medium uppercase tracking-wider text-amber-700/60">Now</p>
                 <p className="text-4xl font-light text-amber-900">{Math.round(weather.temperature)}°</p>
-                <p className="text-sm text-amber-700/80 capitalize">{weather.condition}</p>
+                <p className="text-sm capitalize text-amber-700/80">{weather.condition}</p>
               </div>
               <div className="text-right">
                 <p className="text-xs font-medium uppercase tracking-wider text-amber-700/60">Humidity</p>
@@ -170,8 +189,9 @@ function Dashboard() {
                 <div className="text-center">
                   <p className="text-sm text-red-600">{error}</p>
                   <button
-                    onClick={loadWeather}
-                    className="mt-2 text-xs text-amber-700 underline hover:text-amber-900"
+                    onClick={handleRetryWeather}
+                    className="mt-2 text-xs text-amber-700 underline hover:text-amber-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded"
+                    aria-label="Retry loading weather data"
                   >
                     Retry
                   </button>
@@ -189,9 +209,9 @@ function Dashboard() {
             {ownedFragrances.length === 0 ? (
               <span>
                 Your wardrobe is empty.{' '}
-                <a href="/wardrobe" className="text-amber-800 underline hover:text-amber-950">
+                <Link to="/wardrobe" className="text-amber-800 underline hover:text-amber-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded">
                   Add fragrances
-                </a>
+                </Link>
               </span>
             ) : (
               <span>{ownedFragrances.length} fragrance{ownedFragrances.length !== 1 ? 's' : ''} in your wardrobe</span>
@@ -203,7 +223,8 @@ function Dashboard() {
         <button
           onClick={handleRecommend}
           disabled={loading || ownedFragrances.length === 0}
-          className="group relative w-full overflow-hidden rounded-full bg-amber-900 py-5 text-center font-medium text-white shadow-lg transition-all hover:bg-amber-800 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label="Get fragrance recommendation for today"
+          className="group relative w-full overflow-hidden rounded-full bg-amber-900 py-5 text-center font-medium text-white shadow-lg transition-all hover:bg-amber-800 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <span className={`transition-opacity ${loading ? 'opacity-0' : 'opacity-100'}`}>
             {recommendation ? 'Recommend Another' : 'What Should I Wear Today?'}
@@ -217,7 +238,7 @@ function Dashboard() {
 
         {/* Error Message */}
         {error && (
-          <p className="mt-4 text-center text-sm text-red-600">{error}</p>
+          <p className="mt-4 text-center text-sm text-red-600" role="alert">{error}</p>
         )}
 
         {/* Recommendation Result */}
@@ -255,12 +276,12 @@ function Dashboard() {
 
         {/* Navigation */}
         <nav className="mt-12 flex justify-center gap-8 text-sm">
-          <a
-            href="/wardrobe"
-            className="text-amber-700/80 underline-offset-4 hover:text-amber-900 hover:underline"
+          <Link
+            to="/wardrobe"
+            className="text-amber-700/80 underline-offset-4 hover:text-amber-900 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded"
           >
             Wardrobe
-          </a>
+          </Link>
         </nav>
       </div>
     </div>

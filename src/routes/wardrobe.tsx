@@ -1,5 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useState, useMemo } from 'react'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { useState, useMemo, useEffect } from 'react'
 import { useLocalStorage } from '~/hooks/useLocalStorage'
 import { MY_FRAGRANCES } from '~/lib/fragrances'
 import type { FragranceData } from '~/lib/fragrances'
@@ -29,26 +29,25 @@ function Wardrobe() {
   const [extracting, setExtracting] = useState(false)
   const [extractError, setExtractError] = useState<string | null>(null)
 
-  // Resolve full fragrance objects, migrating string IDs automatically
+  // Resolve full fragrance objects from collection
   const myFragrances: FragranceData[] = useMemo(() => {
-    let changed = false
-    const migrated = myCollection.map(item => {
-      if (typeof item === 'string') {
-        const found = MY_FRAGRANCES.find(f => f.id === item)
-        if (found) {
-          changed = true
-          return found
+    return myCollection
+      .map(item => {
+        if (typeof item === 'string') {
+          return MY_FRAGRANCES.find(f => f.id === item) || null
         }
-        return null
-      }
-      return item
-    }).filter((f): f is FragranceData => f !== null)
+        return item
+      })
+      .filter((f): f is FragranceData => f !== null)
+  }, [myCollection])
 
-    if (changed) {
-      setTimeout(() => setMyCollection(migrated), 0)
+  // Automatically migrate legacy string IDs to full objects
+  useEffect(() => {
+    const hasStringIds = myCollection.some(item => typeof item === 'string')
+    if (hasStringIds && myFragrances.length > 0) {
+      setMyCollection(myFragrances)
     }
-    return migrated
-  }, [myCollection, setMyCollection])
+  }, [myCollection, myFragrances, setMyCollection])
 
   // Filter hardcoded fragrances by search query
   const searchResults = useMemo(() => {
@@ -87,7 +86,6 @@ function Wardrobe() {
       const fragrance: FragranceData = await response.json()
       addToCollection(fragrance)
     } catch (err: any) {
-      console.error(err)
       setExtractError(err.message || 'Failed to extract fragrance notes')
     } finally {
       setExtracting(false)
@@ -103,9 +101,11 @@ function Wardrobe() {
       <div className="mx-auto max-w-md px-6 py-12">
         {/* Header */}
         <header className="mb-8">
-          <a href="/" className="text-sm text-amber-700/70 hover:text-amber-900">← Back</a>
+          <Link to="/" className="text-sm text-amber-700/70 hover:text-amber-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded">
+            ← Back to Home
+          </Link>
           <h1 className="mt-4 text-3xl font-light tracking-tight text-amber-900">Wardrobe</h1>
-          <p className="text-sm text-amber-700/70">{myCollection.length} fragrances in your collection</p>
+          <p className="text-sm text-amber-700/70">{myFragrances.length} fragrance{myFragrances.length !== 1 ? 's' : ''} in your collection</p>
         </header>
 
         {/* Search */}
@@ -116,12 +116,14 @@ function Wardrobe() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search fragrances..."
-              className="w-full rounded-xl border border-amber-200 bg-white px-4 py-3 text-sm outline-none transition-all focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
+              aria-label="Search fragrances to add to collection"
+              className="w-full rounded-xl border border-amber-200 bg-white px-4 py-3 text-sm outline-none transition-all focus:border-amber-400 focus:ring-2 focus:ring-amber-200"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-400 hover:text-amber-600"
+                aria-label="Clear search text"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-400 hover:text-amber-600 focus:outline-none"
               >
                 ×
               </button>
@@ -135,7 +137,8 @@ function Wardrobe() {
                 <button
                   key={fragrance.id}
                   onClick={() => addToCollection(fragrance)}
-                  className="flex w-full items-center justify-between border-b border-amber-50 px-4 py-3 text-left last:border-0 hover:bg-amber-50"
+                  aria-label={`Add ${fragrance.name} by ${fragrance.brand} to collection`}
+                  className="flex w-full items-center justify-between border-b border-amber-50 px-4 py-3 text-left last:border-0 hover:bg-amber-50 focus:outline-none focus:bg-amber-50"
                 >
                   <div>
                     <p className="text-sm font-medium text-amber-900">{fragrance.name}</p>
@@ -157,12 +160,13 @@ function Wardrobe() {
               <button
                 onClick={handleExtractNotes}
                 disabled={extracting}
-                className="w-full rounded-xl bg-amber-900 py-3 text-center text-sm font-medium text-white shadow-sm transition-all hover:bg-amber-800 disabled:cursor-not-allowed disabled:opacity-50"
+                aria-label={`Search ${searchQuery} with AI`}
+                className="w-full rounded-xl bg-amber-900 py-3 text-center text-sm font-medium text-white shadow-sm transition-all hover:bg-amber-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {extracting ? 'Searching with AI...' : `Search "${searchQuery}" with AI`}
               </button>
               {extractError && (
-                <p className="mt-2 text-center text-xs text-red-600">{extractError}</p>
+                <p className="mt-2 text-center text-xs text-red-600" role="alert">{extractError}</p>
               )}
             </div>
           )}
@@ -199,8 +203,8 @@ function Wardrobe() {
                   </div>
                   <button
                     onClick={() => removeFromCollection(fragrance.id)}
-                    className="ml-3 rounded-full p-2 text-amber-400 transition-colors hover:bg-amber-50 hover:text-red-500"
-                    aria-label="Remove from collection"
+                    className="ml-3 rounded-full p-2 text-amber-400 transition-colors hover:bg-amber-50 hover:text-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                    aria-label={`Remove ${fragrance.name} from collection`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
