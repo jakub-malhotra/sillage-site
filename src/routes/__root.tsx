@@ -7,6 +7,7 @@ import {
 import * as React from 'react'
 import type { QueryClient } from '@tanstack/react-query'
 import appCss from '~/styles/app.css?url'
+import { NotFound } from '~/components/NotFound'
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
@@ -23,6 +24,22 @@ export const Route = createRootRouteWithContext<{
       {
         title: 'Sillage',
       },
+      {
+        name: 'description',
+        content: 'Discover your signature scent for today based on real-time weather, temperature, and personal fragrance collection with Sillage.',
+      },
+      {
+        property: 'og:title',
+        content: 'Sillage - One Fragrance For Today',
+      },
+      {
+        property: 'og:description',
+        content: 'Discover your signature scent for today based on real-time weather, temperature, and personal fragrance collection.',
+      },
+      {
+        property: 'og:image',
+        content: '/og-image.png',
+      },
     ],
     links: [
       { rel: 'stylesheet', href: appCss },
@@ -31,7 +48,7 @@ export const Route = createRootRouteWithContext<{
       { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png?v=1' },
     ],
   }),
-  notFoundComponent: () => <div>Route not found</div>,
+  notFoundComponent: NotFound,
   component: RootComponent,
 })
 
@@ -45,7 +62,7 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html>
+    <html lang="en">
       <head>
         <HeadContent />
       </head>

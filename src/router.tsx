@@ -2,6 +2,7 @@ import { createRouter } from '@tanstack/react-router'
 import { QueryClient } from '@tanstack/react-query'
 import { routerWithQueryClient } from '@tanstack/react-router-with-query'
 import { routeTree } from './routeTree.gen'
+import { NotFound } from './components/NotFound'
 
 export function getRouter() {
   const queryClient: QueryClient = new QueryClient({
@@ -20,7 +21,7 @@ export function getRouter() {
       scrollRestoration: true,
       defaultPreloadStaleTime: 0, // Let React Query handle all caching
       defaultErrorComponent: (err) => <p>{err.error.stack}</p>,
-      defaultNotFoundComponent: () => <p>not found</p>,
+      defaultNotFoundComponent: NotFound,
     }),
     queryClient,
   )

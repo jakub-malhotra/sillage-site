@@ -6,7 +6,21 @@ import { MY_FRAGRANCES } from '~/lib/fragrances'
 import type { WeatherData, Fragrance } from '~/types'
 
 export const Route = createFileRoute('/')({
-  head: () => ({ meta: [{ title: 'Sillage' }] }),
+  head: () => ({
+    meta: [
+      { title: 'Sillage - Daily Fragrance Recommendations' },
+      {
+        name: 'description',
+        content: 'Discover your scent for today based on real-time weather, temperature, and personal fragrance collection with Sillage.',
+      },
+      { property: 'og:title', content: 'Sillage - Daily Fragrance Recommendations' },
+      {
+        property: 'og:description',
+        content: 'Discover your scent for today based on real-time weather, temperature, and personal fragrance collection with Sillage.',
+      },
+      { property: 'og:image', content: '/og-image.png' },
+    ],
+  }),
   component: Dashboard,
 })
 
@@ -102,29 +116,29 @@ function Dashboard() {
     }
   }
 
-const getBgGradientClass = (family?: string) => {
-  if (!family) return 'bg-amber-50'
+  const getBgGradientClass = (family?: string) => {
+    if (!family) return 'bg-amber-50'
 
-  const fam = family.toLowerCase()
-  
-  if (fam.includes('aquatic') || fam.includes('marine') || fam.includes('sea')) {
-    return 'bg-gradient-to-br from-sky-100 via-zinc-50 to-blue-50'
-  }
-  if (fam.includes('citrus') || fam.includes('aromatic') || fam.includes('fresh') || fam.includes('fougere')) {
-    return 'bg-gradient-to-br from-emerald-50 via-zinc-50 to-teal-50/70'
-  }
-  if (fam.includes('floral') || fam.includes('fruity') || fam.includes('rose') || fam.includes('gourmand')) {
-    return 'bg-gradient-to-br from-rose-100/80 via-zinc-50 to-pink-50'
-  }
-  if (fam.includes('amber') || fam.includes('oriental') || fam.includes('spicy') || fam.includes('vanilla') || fam.includes('leather')) {
-    return 'bg-gradient-to-br from-amber-100 via-zinc-50 to-orange-50'
-  }
-  if (fam.includes('woody') || fam.includes('wood') || fam.includes('chypre') || fam.includes('cedar') || fam.includes('powdery')) {
-    return 'bg-gradient-to-br from-stone-200/70 via-zinc-50 to-stone-100'
-  }
+    const fam = family.toLowerCase()
 
-  return 'bg-gradient-to-br from-amber-50 via-zinc-50 to-amber-100/40'
-}
+    if (fam.includes('aquatic') || fam.includes('marine') || fam.includes('sea')) {
+      return 'bg-gradient-to-br from-sky-100 via-zinc-50 to-blue-50'
+    }
+    if (fam.includes('citrus') || fam.includes('aromatic') || fam.includes('fresh') || fam.includes('fougere')) {
+      return 'bg-gradient-to-br from-emerald-50 via-zinc-50 to-teal-50/70'
+    }
+    if (fam.includes('floral') || fam.includes('fruity') || fam.includes('rose') || fam.includes('gourmand')) {
+      return 'bg-gradient-to-br from-rose-100/80 via-zinc-50 to-pink-50'
+    }
+    if (fam.includes('amber') || fam.includes('oriental') || fam.includes('spicy') || fam.includes('vanilla') || fam.includes('leather')) {
+      return 'bg-gradient-to-br from-amber-100 via-zinc-50 to-orange-50'
+    }
+    if (fam.includes('woody') || fam.includes('wood') || fam.includes('chypre') || fam.includes('cedar') || fam.includes('powdery')) {
+      return 'bg-gradient-to-br from-stone-200/70 via-zinc-50 to-stone-100'
+    }
+
+    return 'bg-gradient-to-br from-amber-50 via-zinc-50 to-amber-100/40'
+  }
 
   return (
     <div className={`min-h-screen transition-all duration-1000 ${getBgGradientClass(recommendation?.fragrance?.family)}`}>

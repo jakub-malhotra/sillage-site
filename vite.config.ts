@@ -191,6 +191,9 @@ Constraints:
 })
 
 export default defineConfig({
+  build: {
+    sourcemap: false,
+  },
   server: {
     port: 3000,
     allowedHosts: true,

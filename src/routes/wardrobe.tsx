@@ -5,7 +5,21 @@ import { MY_FRAGRANCES } from '~/lib/fragrances'
 import type { FragranceData } from '~/lib/fragrances'
 
 export const Route = createFileRoute('/wardrobe')({
-  head: () => ({ meta: [{ title: 'Wardrobe | Sillage' }] }),
+  head: () => ({
+    meta: [
+      { title: 'Wardrobe | Sillage' },
+      {
+        name: 'description',
+        content: 'Manage and organize your personal fragrance collection, explore notes, and search scents with AI on Sillage.',
+      },
+      { property: 'og:title', content: 'Wardrobe | Sillage' },
+      {
+        property: 'og:description',
+        content: 'Manage and organize your personal fragrance collection, explore notes, and search scents with AI on Sillage.',
+      },
+      { property: 'og:image', content: '/og-image.png' },
+    ],
+  }),
   component: Wardrobe,
 })
 
