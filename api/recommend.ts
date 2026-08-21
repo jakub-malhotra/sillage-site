@@ -50,7 +50,7 @@ Respond with ONLY a JSON object in this exact format:
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: 'openai/gpt-oss-120b',
         messages: [
           { role: 'system', content: 'You are a fragrance recommendation engine. Return precise JSON.' },
           { role: 'user', content: prompt },

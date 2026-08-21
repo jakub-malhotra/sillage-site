@@ -61,7 +61,7 @@ Constraints:
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: 'openai/gpt-oss-120b',
         messages: [
           { role: 'system', content: 'You are a fragrance database API. Return precise raw JSON.' },
           { role: 'user', content: prompt },
