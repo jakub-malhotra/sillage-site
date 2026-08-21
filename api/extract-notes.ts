@@ -61,7 +61,7 @@ Constraints:
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
+        model: 'llama-3.3-70b-versatile',
         messages: [
           { role: 'system', content: 'You are a fragrance database API. Return precise raw JSON.' },
           { role: 'user', content: prompt },
