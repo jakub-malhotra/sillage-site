@@ -67,7 +67,7 @@ Constraints:
           { role: 'user', content: prompt },
         ],
         temperature: 0.2,
-        max_tokens: 400,
+        max_tokens: 2048,
         response_format: { type: 'json_object' }
       })
     });

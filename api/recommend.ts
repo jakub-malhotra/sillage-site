@@ -56,7 +56,7 @@ Respond with ONLY a JSON object in this exact format:
           { role: 'user', content: prompt },
         ],
         temperature: 0.5,
-        max_tokens: 200,
+        max_tokens: 2048,
         response_format: { type: 'json_object' }
       })
     });
