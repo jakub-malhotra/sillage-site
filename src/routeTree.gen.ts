@@ -9,13 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WardrobeRouteImport } from './routes/wardrobe'
-import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SplatRouteImport } from './routes/$'
+import { Route as WardrobeRouteImport } from './routes/wardrobe'
 
-const WardrobeRoute = WardrobeRouteImport.update({
-  id: '/wardrobe',
-  path: '/wardrobe',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SplatRoute = SplatRouteImport.update({
@@ -23,9 +23,9 @@ const SplatRoute = SplatRouteImport.update({
   path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const WardrobeRoute = WardrobeRouteImport.update({
+  id: '/wardrobe',
+  path: '/wardrobe',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -61,11 +61,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/wardrobe': {
-      id: '/wardrobe'
-      path: '/wardrobe'
-      fullPath: '/wardrobe'
-      preLoaderRoute: typeof WardrobeRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$': {
@@ -75,11 +75,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/wardrobe': {
+      id: '/wardrobe'
+      path: '/wardrobe'
+      fullPath: '/wardrobe'
+      preLoaderRoute: typeof WardrobeRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
