@@ -161,11 +161,11 @@ function Dashboard() {
 
   return (
     <div className={`min-h-screen transition-all duration-1000 ${getBgGradientClass(recommendation?.fragrance?.family)}`}>
-      <div className="mx-auto max-w-md px-6 py-12">
+      <main className="mx-auto max-w-md px-6 py-12">
         {/* Header */}
         <header className="mb-10 text-center">
           <h1 className="text-3xl font-light tracking-tight text-amber-900">Sillage</h1>
-          <p className="mt-1 text-sm text-amber-700/70">One fragrance for today</p>
+          <p className="mt-1 text-sm text-amber-800">One fragrance for today</p>
         </header>
 
         {/* Weather Card */}
@@ -173,14 +173,14 @@ function Dashboard() {
           {weather ? (
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-amber-700/60">Now</p>
+                <p className="text-xs font-medium uppercase tracking-wider text-amber-800">Now</p>
                 <p className="text-4xl font-light text-amber-900">{Math.round(weather.temperature)}°</p>
-                <p className="text-sm capitalize text-amber-700/80">{weather.condition}</p>
+                <p className="text-sm capitalize text-amber-800">{weather.condition}</p>
               </div>
               <div className="text-right">
-                <p className="text-xs font-medium uppercase tracking-wider text-amber-700/60">Humidity</p>
+                <p className="text-xs font-medium uppercase tracking-wider text-amber-800">Humidity</p>
                 <p className="text-lg text-amber-900">{weather.humidity}%</p>
-                <p className="text-xs text-amber-700/60">+6h: {Math.round(weather.forecastTemp)}°</p>
+                <p className="text-xs text-amber-800">+6h: {Math.round(weather.forecastTemp)}°</p>
               </div>
             </div>
           ) : (
@@ -190,7 +190,7 @@ function Dashboard() {
                   <p className="text-sm text-red-600">{error}</p>
                   <button
                     onClick={handleRetryWeather}
-                    className="mt-2 text-xs text-amber-700 underline hover:text-amber-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded"
+                    className="mt-2 text-xs text-amber-800 underline hover:text-amber-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-800 rounded"
                     aria-label="Retry loading weather data"
                   >
                     Retry
@@ -205,11 +205,11 @@ function Dashboard() {
 
         {/* Wardrobe Status */}
         <div className="mb-8 text-center">
-          <p className="text-sm text-amber-700/70">
+          <p className="text-sm text-amber-800">
             {ownedFragrances.length === 0 ? (
               <span>
                 Your wardrobe is empty.{' '}
-                <Link to="/wardrobe" className="text-amber-800 underline hover:text-amber-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded">
+                <Link to="/wardrobe" className="text-amber-800 underline hover:text-amber-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-800 rounded">
                   Add fragrances
                 </Link>
               </span>
@@ -224,7 +224,7 @@ function Dashboard() {
           onClick={handleRecommend}
           disabled={loading || ownedFragrances.length === 0}
           aria-label="Get fragrance recommendation for today"
-          className="group relative w-full overflow-hidden rounded-full bg-amber-900 py-5 text-center font-medium text-white shadow-lg transition-all hover:bg-amber-800 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
+          className="group relative w-full overflow-hidden rounded-full bg-amber-900 py-5 text-center font-medium text-white shadow-lg transition-all hover:bg-amber-800 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <span className={`transition-opacity ${loading ? 'opacity-0' : 'opacity-100'}`}>
             {recommendation ? 'Recommend Another' : 'What Should I Wear Today?'}
@@ -244,11 +244,11 @@ function Dashboard() {
         {/* Recommendation Result */}
         {recommendation && (
           <div className="mt-10 rounded-2xl bg-white p-6 shadow-lg">
-            <p className="mb-1 text-xs font-medium uppercase tracking-wider text-amber-700/60">Today&apos;s Pick</p>
+            <p className="mb-1 text-xs font-medium uppercase tracking-wider text-amber-800">Today&apos;s Pick</p>
             <h2 className="text-2xl font-light text-amber-950">
               {recommendation.fragrance.name}
             </h2>
-            <p className="text-sm text-amber-700/80">{recommendation.fragrance.brand}</p>
+            <p className="text-sm text-amber-800">{recommendation.fragrance.brand}</p>
 
             <div className="my-4 h-px bg-amber-100" />
 
@@ -261,12 +261,12 @@ function Dashboard() {
                 {recommendation.fragrance.family}
               </span>
               {recommendation.fragrance.notes_top.slice(0, 2).map(note => (
-                <span key={note} className="rounded-full bg-amber-50 px-3 py-1 text-xs text-amber-700/70">
+                <span key={note} className="rounded-full bg-amber-50 px-3 py-1 text-xs text-amber-800">
                   {note}
                 </span>
               ))}
               {recommendation.fragrance.notes_heart.slice(0, 2).map(note => (
-                <span key={note} className="rounded-full bg-amber-50 px-3 py-1 text-xs text-amber-700/70">
+                <span key={note} className="rounded-full bg-amber-50 px-3 py-1 text-xs text-amber-800">
                   {note}
                 </span>
               ))}
@@ -278,12 +278,12 @@ function Dashboard() {
         <nav className="mt-12 flex justify-center gap-8 text-sm">
           <Link
             to="/wardrobe"
-            className="text-amber-700/80 underline-offset-4 hover:text-amber-900 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded"
+            className="text-amber-800 underline-offset-4 hover:text-amber-900 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-800 rounded"
           >
             Wardrobe
           </Link>
         </nav>
-      </div>
+      </main>
     </div>
   )
 }
