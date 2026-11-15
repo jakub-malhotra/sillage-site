@@ -98,14 +98,14 @@ function Wardrobe() {
 
   return (
     <div className="min-h-screen bg-amber-50">
-      <div className="mx-auto max-w-md px-6 py-12">
+      <main className="mx-auto max-w-md px-6 py-12">
         {/* Header */}
         <header className="mb-8">
-          <Link to="/" className="text-sm text-amber-700/70 hover:text-amber-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded">
+          <Link to="/" className="text-sm text-amber-800 hover:text-amber-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-800 rounded">
             ← Back to Home
           </Link>
           <h1 className="mt-4 text-3xl font-light tracking-tight text-amber-900">Wardrobe</h1>
-          <p className="text-sm text-amber-700/70">{myFragrances.length} fragrance{myFragrances.length !== 1 ? 's' : ''} in your collection</p>
+          <p className="text-sm text-amber-800">{myFragrances.length} fragrance{myFragrances.length !== 1 ? 's' : ''} in your collection</p>
         </header>
 
         {/* Search */}
@@ -123,7 +123,7 @@ function Wardrobe() {
               <button
                 onClick={() => setSearchQuery('')}
                 aria-label="Clear search text"
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-400 hover:text-amber-600 focus:outline-none"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-800 hover:text-amber-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-800 rounded"
               >
                 ×
               </button>
@@ -142,17 +142,17 @@ function Wardrobe() {
                 >
                   <div>
                     <p className="text-sm font-medium text-amber-900">{fragrance.name}</p>
-                    <p className="text-xs text-amber-700/70">{fragrance.brand}</p>
-                    <p className="text-xs text-amber-600/60">{fragrance.family}</p>
+                    <p className="text-xs text-amber-800">{fragrance.brand}</p>
+                    <p className="text-xs text-amber-800">{fragrance.family}</p>
                   </div>
-                  <span className="text-lg text-amber-400">+</span>
+                  <span className="text-lg text-amber-800">+</span>
                 </button>
               ))}
             </div>
           )}
 
           {searchQuery.trim() && searchResults.length === 0 && (
-            <p className="mt-3 text-center text-sm text-amber-600/60">No matches found in standard library.</p>
+            <p className="mt-3 text-center text-sm text-amber-800">No matches found in standard library.</p>
           )}
 
           {searchQuery.trim() && (
@@ -161,7 +161,7 @@ function Wardrobe() {
                 onClick={handleExtractNotes}
                 disabled={extracting}
                 aria-label={`Search ${searchQuery} with AI`}
-                className="w-full rounded-xl bg-amber-900 py-3 text-center text-sm font-medium text-white shadow-sm transition-all hover:bg-amber-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-xl bg-amber-900 py-3 text-center text-sm font-medium text-white shadow-sm transition-all hover:bg-amber-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-800 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {extracting ? 'Searching with AI...' : `Search "${searchQuery}" with AI`}
               </button>
@@ -175,12 +175,12 @@ function Wardrobe() {
         {/* My Collection */}
         {myFragrances.length === 0 ? (
           <div className="rounded-xl border border-dashed border-amber-300 bg-amber-100/50 py-12 text-center">
-            <p className="text-amber-700/70">Your collection is empty</p>
-            <p className="mt-1 text-sm text-amber-600/60">Search above to add fragrances</p>
+            <p className="text-amber-800">Your collection is empty</p>
+            <p className="mt-1 text-sm text-amber-800">Search above to add fragrances</p>
           </div>
         ) : (
           <div>
-            <h2 className="mb-4 text-sm font-medium uppercase tracking-wider text-amber-700/60">
+            <h2 className="mb-4 text-sm font-medium uppercase tracking-wider text-amber-800">
               My Collection
             </h2>
             <div className="grid gap-3">
@@ -191,11 +191,11 @@ function Wardrobe() {
                 >
                   <div className="flex-1">
                     <h3 className="font-medium text-amber-950">{fragrance.name}</h3>
-                    <p className="text-sm text-amber-700/70">{fragrance.brand}</p>
-                    <p className="mt-1 text-xs text-amber-600/60">{fragrance.family}</p>
+                    <p className="text-sm text-amber-800">{fragrance.brand}</p>
+                    <p className="mt-1 text-xs text-amber-800">{fragrance.family}</p>
                     <div className="mt-2 flex flex-wrap gap-1">
                       {fragrance.notes_top.slice(0, 2).map((note) => (
-                        <span key={note} className="rounded-full bg-amber-50 px-2 py-0.5 text-xs text-amber-700/70">
+                        <span key={note} className="rounded-full bg-amber-50 px-2 py-0.5 text-xs text-amber-800">
                           {note}
                         </span>
                       ))}
@@ -203,7 +203,7 @@ function Wardrobe() {
                   </div>
                   <button
                     onClick={() => removeFromCollection(fragrance.id)}
-                    className="ml-3 rounded-full p-2 text-amber-400 transition-colors hover:bg-amber-50 hover:text-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                    className="ml-3 rounded-full p-2 text-amber-800 transition-colors hover:bg-amber-50 hover:text-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-800"
                     aria-label={`Remove ${fragrance.name} from collection`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -215,7 +215,7 @@ function Wardrobe() {
             </div>
           </div>
         )}
-      </div>
+      </main>
     </div>
   )
 }
