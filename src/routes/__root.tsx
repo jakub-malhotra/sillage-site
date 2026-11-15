@@ -55,15 +55,12 @@ export const Route = createRootRouteWithContext<{
     ],
   }),
   notFoundComponent: NotFound,
+  shellComponent: RootDocument,
   component: RootComponent,
 })
 
 function RootComponent() {
-  return (
-    <RootDocument>
-      <Outlet />
-    </RootDocument>
-  )
+  return <Outlet />
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {

@@ -112,6 +112,8 @@ function Wardrobe() {
         <div className="mb-6">
           <div className="relative">
             <input
+              id="fragrance-search"
+              name="fragrance-search"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
