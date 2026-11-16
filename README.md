@@ -2,16 +2,16 @@
 
 [live site](https://sillage-flax-kappa.vercel.app/)
 
-a web app that picks a fragrance from your collection based on the day's weather. it fetches real-time temperature, humidity, and forecast conditions from open-meteo, then uses a serverless ai endpoint to match the climate against the scent profiles saved in your local storage. the ui dynamically updates its background gradients to reflect the recommended fragrance family.
+a web app that picks a fragrance from your collection based on the day's weather. it checks the local temperature, humidity, and forecast through open-meteo, then uses ai to match the weather against the fragrances saved in your browser. the background colors shift to match the scent family it picks.
 
 ### stack
 react, typescript, vite, tailwind css, tanstack router, vercel serverless functions, groq api, open-meteo api.
 
-### architecture & features
-- **climate-aware matching:** pulls live weather telemetry (temperature, humidity, weather code, and 6-hour temperature delta) via open-meteo to weight scent families appropriately for the environment.
-- **structured llm extraction:** uses groq with strict json schema prompts to extract top, heart, and base notes, seasonality, longevity, and sillage from unstructured fragrance inputs.
-- **serverless api proxy:** isolates groq api credentials inside vercel serverless functions (`/api/recommend`) so no keys are ever exposed to the client bundle.
-- **adaptive ui:** transitions ambient background gradients dynamically based on the recommended scent family while persisting user collections in local storage.
+### how it works
+- **weather-aware picks:** checks live temperature, humidity, conditions, and the 6-hour forecast via open-meteo to suggest scents that fit the weather.
+- **automatic note breakdown:** uses groq to turn a fragrance name into structured notes (top, heart, base), best seasons, longevity, and sillage in a consistent json format.
+- **secure api calls:** routes groq requests through vercel serverless functions (`/api/recommend`) so api keys stay on the server and out of the browser.
+- **dynamic ui:** saves your collection in local storage and shifts the page gradients to reflect the recommended fragrance family.
 
 ### benchmarks & reliability
 tested `/api/recommend` across **50 global cities** (-34 °C to 32.6 °C across clear, cloudy, rainy, foggy, and snowy conditions) against an 18-fragrance collection:
