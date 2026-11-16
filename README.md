@@ -18,7 +18,7 @@ tested `/api/recommend` across **50 global cities** (-34 °C to 32.6 °C across 
 
 - **schema reliability:** 50/50 first-try valid json responses matching strict field, enum, and anti-hallucination id checks with zero retries or fallbacks.
 - **end-to-end latency:** 1.06 s median (1.36 s p95) across live open-meteo fetch (~70 ms median) + groq inference (~988 ms median).
-- **lighthouse mobile (slow 4g):** 95+ performance (1.8 s lcp), 100 accessibility, 100 best practices, 100 seo.
+- **lighthouse mobile (slow 4g):** 99 performance (1.8 s lcp), 100 accessibility, 100 best practices, 100 seo.
 
 see [`scripts/groq-reliability-test.mjs`](./scripts/groq-reliability-test.mjs) for the validation script and [`scripts/groq-reliability-results.md`](./scripts/groq-reliability-results.md) for the full run log.
 
